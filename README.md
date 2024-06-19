@@ -16,10 +16,16 @@ $ cd go-git-server
 $ go build
 ```
 
+## Install from source
+```shell
+$ go install github.com/ruzhila/go-git-server@latest
+# Run the server
+$ go-git-server
+```
 ## Usage
 ```shell
-$ ./go-git-http-server -h
-Usage of ./go-git-http-server:
+$ ./go-git-server -h
+Usage of ./go-git-server:
   -addr string
         address to listen on (default "127.0.0.1:8080")
   -create
@@ -29,10 +35,10 @@ Usage of ./go-git-http-server:
   -root string
         root repository path (default "/tmp/git")
 
-$ ./go-git-http-server -addr 127.0.0.1:8080 -root /var/git
+$ ./go-git-server -addr 127.0.0.1:8080 -root /var/git
 
 # Create a new repository
-$ ./go-git-http-server -root /var/git -create hellorepos
+$ ./go-git-server -root /var/git -create hellorepos
 
 # Visit the repository
 $ git clone http://127.0.0.1:8080/hellorepos
