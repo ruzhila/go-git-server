@@ -15,13 +15,6 @@ import (
 var gitRootPath string
 var prefix string
 
-func system(cmd string, args ...string) error {
-	c := exec.Command(cmd, args...)
-	c.Stdout = os.Stdout
-	c.Stderr = os.Stderr
-	return c.Run()
-}
-
 func HandleGit(w http.ResponseWriter, r *http.Request) {
 	pathInfo := strings.TrimPrefix(r.URL.Path, strings.TrimSuffix(prefix, "/"))
 	handler := cgi.Handler{
@@ -56,7 +49,10 @@ func CreateRepository(root, name string) error {
 		{"git", "--git-dir", reposDir, "config", "init.defaultBranch", "master"},
 	}
 	for _, cmd := range cmds {
-		if err = system(cmd[0], cmd[1:]...); err != nil {
+		c := exec.Command(cmd[0], cmd[1:]...)
+		c.Stdout = os.Stdout
+		c.Stderr = os.Stderr
+		if err = c.Run(); err != nil {
 			log.Println("Fail:", strings.Join(cmd, " "), err)
 			return err
 		}
@@ -85,11 +81,12 @@ func main() {
 		return
 	}
 	fullAddr := filepath.Join(addr, prefix)
-	welcome := `Simple Git Server started on %s
-Quit the server with CONTROL-C.
+	welcome := `🎉Simple Git Server started on %s 🚀
+Quit the server with CONTROL-C. 👻
 
 Clone repository with:
   git clone http://%s/<repository>.git
+
 `
 	fmt.Printf(welcome, fullAddr, fullAddr)
 	err := http.ListenAndServe(addr, http.HandlerFunc(HandleGit))
